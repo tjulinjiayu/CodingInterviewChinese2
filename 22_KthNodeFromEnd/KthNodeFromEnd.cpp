@@ -21,32 +21,48 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 #include <cstdio>
 #include "..\Utilities\List.h"
 
-ListNode* FindKthToTail(ListNode* pListHead, unsigned int k)
+// ListNode* FindKthToTail(ListNode* pListHead, unsigned int k)
+// {
+//     if(pListHead == nullptr || k == 0)
+//         return nullptr;
+
+//     ListNode *pAhead = pListHead;
+//     ListNode *pBehind = nullptr;
+
+//     for(unsigned int i = 0; i < k - 1; ++ i)
+//     {
+//         if(pAhead->m_pNext != nullptr)
+//             pAhead = pAhead->m_pNext;
+//         else
+//         {
+//             return nullptr;
+//         }
+//     }
+
+//     pBehind = pListHead;
+//     while(pAhead->m_pNext != nullptr)
+//     {
+//         pAhead = pAhead->m_pNext;
+//         pBehind = pBehind->m_pNext;
+//     }
+
+//     return pBehind;
+// }
+
+ListNode* FindKthToTail(ListNode* head, unsigned int k)
 {
-    if(pListHead == nullptr || k == 0)
+    if(head == nullptr || k == 0)
         return nullptr;
-
-    ListNode *pAhead = pListHead;
-    ListNode *pBehind = nullptr;
-
-    for(unsigned int i = 0; i < k - 1; ++ i)
+    ListNode *pre = head, *ahead = head;
+    int i = 0;
+    while(ahead->next)
     {
-        if(pAhead->m_pNext != nullptr)
-            pAhead = pAhead->m_pNext;
-        else
-        {
-            return nullptr;
-        }
+        ++i;
+        ahead = ahead->next;
+        if(i >= k-1)
+            pre = pre->next;
     }
-
-    pBehind = pListHead;
-    while(pAhead->m_pNext != nullptr)
-    {
-        pAhead = pAhead->m_pNext;
-        pBehind = pBehind->m_pNext;
-    }
-
-    return pBehind;
+    return pre;
 }
 
 // ====================≤‚ ‘¥˙¬Î====================
