@@ -19,7 +19,122 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 值为4的结点。
 
 #include <cstdio>
-#include "..\Utilities\List.h"
+//#include "..\Utilities\List.h"
+#include <stdio.h>
+#include <stdlib.h>
+struct ListNode
+{
+    int       m_nValue;
+    ListNode* next;
+};
+ListNode* CreateListNode(int value)
+{
+    ListNode* pNode = new ListNode();
+    pNode->m_nValue = value;
+    pNode->next = nullptr;
+
+    return pNode;
+}
+
+void ConnectListNodes(ListNode* pCurrent, ListNode* pNext)
+{
+    if(pCurrent == nullptr)
+    {
+        printf("Error to connect two nodes.\n");
+        exit(1);
+    }
+
+    pCurrent->next = pNext;
+}
+
+void PrintListNode(ListNode* pNode)
+{ 
+    if(pNode == nullptr)
+    {
+        printf("The node is nullptr\n");
+    }
+    else
+    {
+        printf("The key in node is %d.\n", pNode->m_nValue);
+    }
+}
+
+void PrintList(ListNode* pHead)
+{
+    printf("PrintList starts.\n");
+    
+    ListNode* pNode = pHead;
+    while(pNode != nullptr)
+    {
+        printf("%d\t", pNode->m_nValue);
+        pNode = pNode->next;
+    }
+
+    printf("\nPrintList ends.\n");
+}
+
+void DestroyList(ListNode* pHead)
+{
+    ListNode* pNode = pHead;
+    while(pNode != nullptr)
+    {
+        pHead = pHead->next;
+        delete pNode;
+        pNode = pHead;
+    }
+}
+
+void AddToTail(ListNode** pHead, int value)
+{
+    ListNode* pNew = new ListNode();
+    pNew->m_nValue = value;
+    pNew->next = nullptr;
+
+    if(*pHead == nullptr)
+    {
+        *pHead = pNew;
+    }
+    else
+    {
+        ListNode* pNode = *pHead;
+        while(pNode->next != nullptr)
+            pNode = pNode->next;
+
+        pNode->next = pNew;
+    }
+}
+
+void RemoveNode(ListNode** pHead, int value)
+{
+    if(pHead == nullptr || *pHead == nullptr)
+        return;
+
+    ListNode* pToBeDeleted = nullptr;
+    if((*pHead)->m_nValue == value)
+    {
+        pToBeDeleted = *pHead;
+        *pHead = (*pHead)->next;
+    }
+    else
+    {
+        ListNode* pNode = *pHead;
+        while(pNode->next != nullptr && pNode->next->m_nValue != value)
+            pNode = pNode->next;
+
+        if(pNode->next != nullptr && pNode->next->m_nValue == value)
+        {
+            pToBeDeleted = pNode->next;
+            pNode->next = pNode->next->next;
+        }
+    }
+
+    if(pToBeDeleted != nullptr)
+    {
+        delete pToBeDeleted;
+        pToBeDeleted = nullptr;
+    }
+}
+
 
 // ListNode* FindKthToTail(ListNode* pListHead, unsigned int k)
 // {
@@ -31,8 +146,8 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 
 //     for(unsigned int i = 0; i < k - 1; ++ i)
 //     {
-//         if(pAhead->m_pNext != nullptr)
-//             pAhead = pAhead->m_pNext;
+//         if(pAhead->next != nullptr)
+//             pAhead = pAhead->next;
 //         else
 //         {
 //             return nullptr;
@@ -40,10 +155,10 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 //     }
 
 //     pBehind = pListHead;
-//     while(pAhead->m_pNext != nullptr)
+//     while(pAhead->next != nullptr)
 //     {
-//         pAhead = pAhead->m_pNext;
-//         pBehind = pBehind->m_pNext;
+//         pAhead = pAhead->next;
+//         pBehind = pBehind->next;
 //     }
 
 //     return pBehind;
@@ -59,9 +174,10 @@ ListNode* FindKthToTail(ListNode* head, unsigned int k)
     {
         ++i;
         ahead = ahead->next;
-        if(i >= k-1)
+        if(i > k-1)
             pre = pre->next;
     }
+    if(i < k-1) return nullptr;/* 长度不足k个 */
     return pre;
 }
 
