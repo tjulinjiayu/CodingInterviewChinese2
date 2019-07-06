@@ -17,28 +17,142 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 环的入口结点是结点3。
 
 #include <cstdio>
-#include "../Utilities/list.h"
+//#include "../Utilities/list.h"
+#include <stdio.h>
+#include <stdlib.h>
+struct ListNode
+{
+    int       m_nValue;
+    ListNode* next;
+};
+ListNode* CreateListNode(int value)
+{
+    ListNode* pNode = new ListNode();
+    pNode->m_nValue = value;
+    pNode->next = nullptr;
+
+    return pNode;
+}
+
+void ConnectListNodes(ListNode* pCurrent, ListNode* pNext)
+{
+    if(pCurrent == nullptr)
+    {
+        printf("Error to connect two nodes.\n");
+        exit(1);
+    }
+
+    pCurrent->next = pNext;
+}
+
+void PrintListNode(ListNode* pNode)
+{ 
+    if(pNode == nullptr)
+    {
+        printf("The node is nullptr\n");
+    }
+    else
+    {
+        printf("The key in node is %d.\n", pNode->m_nValue);
+    }
+}
+
+void PrintList(ListNode* pHead)
+{
+    printf("PrintList starts.\n");
+    
+    ListNode* pNode = pHead;
+    while(pNode != nullptr)
+    {
+        printf("%d\t", pNode->m_nValue);
+        pNode = pNode->next;
+    }
+
+    printf("\nPrintList ends.\n");
+}
+
+void DestroyList(ListNode* pHead)
+{
+    ListNode* pNode = pHead;
+    while(pNode != nullptr)
+    {
+        pHead = pHead->next;
+        delete pNode;
+        pNode = pHead;
+    }
+}
+
+void AddToTail(ListNode** pHead, int value)
+{
+    ListNode* pNew = new ListNode();
+    pNew->m_nValue = value;
+    pNew->next = nullptr;
+
+    if(*pHead == nullptr)
+    {
+        *pHead = pNew;
+    }
+    else
+    {
+        ListNode* pNode = *pHead;
+        while(pNode->next != nullptr)
+            pNode = pNode->next;
+
+        pNode->next = pNew;
+    }
+}
+
+void RemoveNode(ListNode** pHead, int value)
+{
+    if(pHead == nullptr || *pHead == nullptr)
+        return;
+
+    ListNode* pToBeDeleted = nullptr;
+    if((*pHead)->m_nValue == value)
+    {
+        pToBeDeleted = *pHead;
+        *pHead = (*pHead)->next;
+    }
+    else
+    {
+        ListNode* pNode = *pHead;
+        while(pNode->next != nullptr && pNode->next->m_nValue != value)
+            pNode = pNode->next;
+
+        if(pNode->next != nullptr && pNode->next->m_nValue == value)
+        {
+            pToBeDeleted = pNode->next;
+            pNode->next = pNode->next->next;
+        }
+    }
+
+    if(pToBeDeleted != nullptr)
+    {
+        delete pToBeDeleted;
+        pToBeDeleted = nullptr;
+    }
+}
 
 ListNode* MeetingNode(ListNode* pHead)
 {
     if(pHead == nullptr)
         return nullptr;
 
-    ListNode* pSlow = pHead->m_pNext;
+    ListNode* pSlow = pHead->next;
     if(pSlow == nullptr)
         return nullptr;
 
-    ListNode* pFast = pSlow->m_pNext;
+    ListNode* pFast = pSlow->next;
     while(pFast != nullptr && pSlow != nullptr)
     {
         if(pFast == pSlow)
             return pFast;
 
-        pSlow = pSlow->m_pNext;
+        pSlow = pSlow->next;
 
-        pFast = pFast->m_pNext;
+        pFast = pFast->next;
         if(pFast != nullptr)
-            pFast = pFast->m_pNext;
+            pFast = pFast->next;
     }
 
     return nullptr;
@@ -53,23 +167,23 @@ ListNode* EntryNodeOfLoop(ListNode* pHead)
     // 得到环中结点的数目
     int nodesInLoop = 1;
     ListNode* pNode1 = meetingNode;
-    while(pNode1->m_pNext != meetingNode)
+    while(pNode1->next != meetingNode)
     {
-        pNode1 = pNode1->m_pNext;
+        pNode1 = pNode1->next;
         ++nodesInLoop;
     }
 
     // 先移动pNode1，次数为环中结点的数目
     pNode1 = pHead;
     for(int i = 0; i < nodesInLoop; ++i)
-        pNode1 = pNode1->m_pNext;
+        pNode1 = pNode1->next;
 
     // 再移动pNode1和pNode2
     ListNode* pNode2 = pHead;
     while(pNode1 != pNode2)
     {
-        pNode1 = pNode1->m_pNext;
-        pNode2 = pNode2->m_pNext;
+        pNode1 = pNode1->next;
+        pNode2 = pNode2->next;
     }
 
     return pNode1;
