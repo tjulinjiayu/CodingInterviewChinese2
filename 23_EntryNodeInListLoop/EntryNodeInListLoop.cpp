@@ -145,8 +145,9 @@ ListNode* MeetingNode(ListNode* pHead)
     ListNode* pFast = pSlow->next;
     while(pFast != nullptr && pSlow != nullptr)
     {
+        //ÏàÓö¼´ÓÐ»·
         if(pFast == pSlow)
-            return pFast;
+            return pFast; 
 
         pSlow = pSlow->next;
 
