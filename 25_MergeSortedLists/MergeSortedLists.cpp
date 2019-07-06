@@ -18,31 +18,170 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 表3所示。
 
 #include <cstdio>
-#include "..\Utilities\List.h"
-
-ListNode* Merge(ListNode* pHead1, ListNode* pHead2)
+//#include "..\Utilities\List.h"
+#include <stdio.h>
+#include <stdlib.h>
+struct ListNode
 {
-    if(pHead1 == nullptr)
-        return pHead2;
-    else if(pHead2 == nullptr)
-        return pHead1;
+    int       m_nValue;
+    ListNode* next;
+};
+ListNode* CreateListNode(int value)
+{
+    ListNode* pNode = new ListNode();
+    pNode->m_nValue = value;
+    pNode->next = nullptr;
 
-    ListNode* pMergedHead = nullptr;
+    return pNode;
+}
 
-    if(pHead1->m_nValue < pHead2->m_nValue)
+void ConnectListNodes(ListNode* pCurrent, ListNode* pNext)
+{
+    if(pCurrent == nullptr)
     {
-        pMergedHead = pHead1;
-        pMergedHead->m_pNext = Merge(pHead1->m_pNext, pHead2);
+        printf("Error to connect two nodes.\n");
+        exit(1);
+    }
+
+    pCurrent->next = pNext;
+}
+
+void PrintListNode(ListNode* pNode)
+{ 
+    if(pNode == nullptr)
+    {
+        printf("The node is nullptr\n");
     }
     else
     {
-        pMergedHead = pHead2;
-        pMergedHead->m_pNext = Merge(pHead1, pHead2->m_pNext);
+        printf("The key in node is %d.\n", pNode->m_nValue);
     }
-
-    return pMergedHead;
 }
 
+void PrintList(ListNode* pHead)
+{
+    printf("PrintList starts.\n");
+    
+    ListNode* pNode = pHead;
+    while(pNode != nullptr)
+    {
+        printf("%d\t", pNode->m_nValue);
+        pNode = pNode->next;
+    }
+
+    printf("\nPrintList ends.\n");
+}
+
+void DestroyList(ListNode* pHead)
+{
+    ListNode* pNode = pHead;
+    while(pNode != nullptr)
+    {
+        pHead = pHead->next;
+        delete pNode;
+        pNode = pHead;
+    }
+}
+
+void AddToTail(ListNode** pHead, int value)
+{
+    ListNode* pNew = new ListNode();
+    pNew->m_nValue = value;
+    pNew->next = nullptr;
+
+    if(*pHead == nullptr)
+    {
+        *pHead = pNew;
+    }
+    else
+    {
+        ListNode* pNode = *pHead;
+        while(pNode->next != nullptr)
+            pNode = pNode->next;
+
+        pNode->next = pNew;
+    }
+}
+
+void RemoveNode(ListNode** pHead, int value)
+{
+    if(pHead == nullptr || *pHead == nullptr)
+        return;
+
+    ListNode* pToBeDeleted = nullptr;
+    if((*pHead)->m_nValue == value)
+    {
+        pToBeDeleted = *pHead;
+        *pHead = (*pHead)->next;
+    }
+    else
+    {
+        ListNode* pNode = *pHead;
+        while(pNode->next != nullptr && pNode->next->m_nValue != value)
+            pNode = pNode->next;
+
+        if(pNode->next != nullptr && pNode->next->m_nValue == value)
+        {
+            pToBeDeleted = pNode->next;
+            pNode->next = pNode->next->next;
+        }
+    }
+
+    if(pToBeDeleted != nullptr)
+    {
+        delete pToBeDeleted;
+        pToBeDeleted = nullptr;
+    }
+}
+
+// ListNode* Merge(ListNode* pHead1, ListNode* pHead2)
+// {
+//     if(pHead1 == nullptr)
+//         return pHead2;
+//     else if(pHead2 == nullptr)
+//         return pHead1;
+
+//     ListNode* pMergedHead = nullptr;
+
+//     if(pHead1->m_nValue < pHead2->m_nValue)
+//     {
+//         pMergedHead = pHead1;
+//         pMergedHead->m_pNext = Merge(pHead1->m_pNext, pHead2);
+//     }
+//     else
+//     {
+//         pMergedHead = pHead2;
+//         pMergedHead->m_pNext = Merge(pHead1, pHead2->m_pNext);
+//     }
+
+//     return pMergedHead;
+// }
+/* 循环的解法 */
+ListNode* Merge(ListNode* list1, ListNode* list2)
+{
+    // if(list1 == nullptr) return list2;
+    // else if(list2 == nullptr) return list1;
+    ListNode* cur = new ListNode();
+    cur->next = nullptr;
+    ListNode* newHead = cur;
+
+    while(list1 && list2)
+    {
+        if(list1->m_nValue < list2->m_nValue)
+        {
+            cur->next = list1;
+            list1 = list1->next;
+        }
+        else
+        {
+            cur->next = list2;
+            list2 = list2->next;
+        }
+        cur = cur->next;
+    }
+    cur->next = list1 ? list1 : list2;
+    return newHead->next;
+}
 // ====================测试代码====================
 ListNode* Test(char* testName, ListNode* pHead1, ListNode* pHead2)
 {
