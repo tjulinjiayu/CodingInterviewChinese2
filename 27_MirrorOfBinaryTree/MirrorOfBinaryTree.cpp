@@ -16,25 +16,145 @@ https://github.com/zhedahht/CodingInterviewChinese2/blob/master/LICENSE.txt)
 // 题目：请完成一个函数，输入一个二叉树，该函数输出它的镜像。
 
 #include <cstdio>
-#include "..\Utilities\BinaryTree.h"
+//#include "..\Utilities\BinaryTree.h"
 #include <stack>
-
-void MirrorRecursively(BinaryTreeNode *pNode)
+struct BinaryTreeNode 
 {
-    if((pNode == nullptr) || (pNode->m_pLeft == nullptr && pNode->m_pRight))
-        return;
+    int                    m_nValue; 
+    BinaryTreeNode*        m_pLeft;  
+    BinaryTreeNode*        m_pRight; 
+};
+BinaryTreeNode* CreateBinaryTreeNode(int value)
+{
+    BinaryTreeNode* pNode = new BinaryTreeNode();
+    pNode->m_nValue = value;
+    pNode->m_pLeft = nullptr;
+    pNode->m_pRight = nullptr;
 
-    BinaryTreeNode *pTemp = pNode->m_pLeft;
-    pNode->m_pLeft = pNode->m_pRight;
-    pNode->m_pRight = pTemp;
-    
-    if(pNode->m_pLeft)
-        MirrorRecursively(pNode->m_pLeft);  
-
-    if(pNode->m_pRight)
-        MirrorRecursively(pNode->m_pRight); 
+    return pNode;
 }
 
+void ConnectTreeNodes(BinaryTreeNode* pParent, BinaryTreeNode* pLeft, BinaryTreeNode* pRight)
+{
+    if(pParent != nullptr)
+    {
+        pParent->m_pLeft = pLeft;
+        pParent->m_pRight = pRight;
+    }
+}
+
+void PrintTreeNode(const BinaryTreeNode* pNode)
+{
+    if(pNode != nullptr)
+    {
+        printf("value of this node is: %d\n", pNode->m_nValue);
+
+        if(pNode->m_pLeft != nullptr)
+            printf("value of its left child is: %d.\n", pNode->m_pLeft->m_nValue);
+        else
+            printf("left child is nullptr.\n");
+
+        if(pNode->m_pRight != nullptr)
+            printf("value of its right child is: %d.\n", pNode->m_pRight->m_nValue);
+        else
+            printf("right child is nullptr.\n");
+    }
+    else
+    {
+        printf("this node is nullptr.\n");
+    }
+
+    printf("\n");
+}
+
+void PrintTree(const BinaryTreeNode* pRoot)
+{
+    PrintTreeNode(pRoot);
+
+    if(pRoot != nullptr)
+    {
+        if(pRoot->m_pLeft != nullptr)
+            PrintTree(pRoot->m_pLeft);
+
+        if(pRoot->m_pRight != nullptr)
+            PrintTree(pRoot->m_pRight);
+    }
+}
+
+void DestroyTree(BinaryTreeNode* pRoot)
+{
+    if(pRoot != nullptr)
+    {
+        BinaryTreeNode* pLeft = pRoot->m_pLeft;
+        BinaryTreeNode* pRight = pRoot->m_pRight;
+
+        delete pRoot;
+        pRoot = nullptr;
+
+        DestroyTree(pLeft);
+        DestroyTree(pRight);
+    }
+}
+// void MirrorRecursively(BinaryTreeNode *pNode)
+// {
+//     if((pNode == nullptr) || (pNode->m_pLeft == nullptr && pNode->m_pRight))
+//         return;
+
+//     BinaryTreeNode *pTemp = pNode->m_pLeft;
+//     pNode->m_pLeft = pNode->m_pRight;
+//     pNode->m_pRight = pTemp;
+    
+//     if(pNode->m_pLeft)
+//         MirrorRecursively(pNode->m_pLeft);  
+
+//     if(pNode->m_pRight)
+//         MirrorRecursively(pNode->m_pRight); 
+// }
+
+// void MirrorIteratively(BinaryTreeNode* pRoot)
+// {
+//     if(pRoot == nullptr)
+//         return;
+
+//     std::stack<BinaryTreeNode*> stackTreeNode;
+//     stackTreeNode.push(pRoot);
+
+//     while(stackTreeNode.size() > 0)
+//     {
+//         BinaryTreeNode *pNode = stackTreeNode.top();
+//         stackTreeNode.pop();
+
+//         BinaryTreeNode *pTemp = pNode->m_pLeft;
+//         pNode->m_pLeft = pNode->m_pRight;
+//         pNode->m_pRight = pTemp;
+
+//         if(pNode->m_pLeft)
+//             stackTreeNode.push(pNode->m_pLeft);
+
+//         if(pNode->m_pRight)
+//             stackTreeNode.push(pNode->m_pRight);
+//     }
+// }
+
+/* 递归解法 */
+void MirrorRecursively(BinaryTreeNode* pRoot)
+{
+    if(pRoot == nullptr)
+        return;
+    /* 到达叶结点 */
+    if(pRoot->m_pLeft == nullptr && pRoot->m_pRight == nullptr)
+        return;
+    /* 递归主体，交换非叶节点 */
+    BinaryTreeNode* pTemp = pRoot->m_pLeft;
+    pRoot->m_pLeft = pRoot->m_pRight;
+    pRoot->m_pRight = pTemp;
+
+    if(pRoot->m_pLeft)
+        MirrorRecursively(pRoot->m_pLeft);
+    if(pRoot->m_pRight)
+        MirrorRecursively(pRoot->m_pRight);
+}
+/* 循环迭代的解法,利用栈实现，思想与递归类似 */
 void MirrorIteratively(BinaryTreeNode* pRoot)
 {
     if(pRoot == nullptr)
