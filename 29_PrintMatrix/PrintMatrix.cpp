@@ -94,7 +94,7 @@ void PrintMatrixClockwisely(int** numbers, int columns, int rows)
 void PrintMatrixInCircle(int** numbers, int columns, int rows, int start)
 {
     int endX = columns - 1 - start;
-    int endY = rows - 1 -start;
+    int endY = rows - 1 - start;
 
     for(int i = start; i <= endX; ++i)
     {

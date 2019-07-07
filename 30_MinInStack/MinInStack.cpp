@@ -32,7 +32,7 @@ void Test(const char* testName, const StackWithMin<int>& stack, int expected)
 
 int main(int argc, char* argv[])
 {
-    StackWithMin<int> stack;
+    StackWithMin<int> stack; //实例化类模板需要提供元素类型
 
     stack.push(3);
     Test("Test1", stack, 3);
